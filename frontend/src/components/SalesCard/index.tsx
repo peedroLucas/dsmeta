@@ -8,36 +8,40 @@ import { BASE_URL } from '../../utils/request';
 import { sale } from '../../models/slae';
 
 function SalesCard() {
-     
+
     const min = new Date(new Date().setDate(new Date().getDate() - 365));
-    const Max = new Date ();
+    const Max = new Date();
 
     const [MinDate, setMinDate] = useState(min);
     const [MaxDate, setMaxDate] = useState(Max);
 
-const [Sale, setSales] = useState <sale[]>([]);
+    const [Sale, setSales] = useState<sale[]>([]);
 
 
-useEffect(()=> {
-     axios.get(`${BASE_URL}/sales`)
-     .then(response => {
-         setSales(response.data.content);
-     })
-     
-},[] );
+    useEffect(() => {
 
+        const dmin =MinDate.toISOString().slice(0,10);
+        const dmax =MaxDate.toISOString().slice(0,10);
+        
+        console.log(dmin)
 
+            axios.get(`${BASE_URL}/sales?minDate=${dmin}&maxDate=${dmax}`)
+                .then(response => {
+                    setSales(response.data.content);
+                })
+
+    }, [MinDate,MaxDate]);
 
     return (
 
-        
+
         <div className="dsmeta-card">
             <h2 className="dsmeta-sales-title">Vendas</h2>
             <div>
                 <div className="dsmeta-form-control-container">
                     <DatePicker
                         selected={(MinDate)}
-                        onChange={(date: Date) => setMinDate(date) }
+                        onChange={(date: Date) => setMinDate(date)}
                         className="dsmeta-form-control"
                         dateFormat="dd/MM/yyyy"
                     />
@@ -45,7 +49,7 @@ useEffect(()=> {
                 <div className="dsmeta-form-control-container">
                     <DatePicker
                         selected={(MaxDate)}
-                        onChange={(date: Date) =>  setMaxDate(date)}
+                        onChange={(date: Date) => setMaxDate(date)}
                         className="dsmeta-form-control"
                         dateFormat="dd/MM/yyyy"
                     />
@@ -67,22 +71,22 @@ useEffect(()=> {
                     </thead>
                     <tbody>
                         {Sale.map(sale => {
-                            return(
-                                <tr key ={sale.id}>
-                            <td className="show992">{sale.id}</td>
-                            <td className="show576">{new Date(sale.date).toLocaleDateString()}</td>
-                            <td>{sale.sellerName}</td>
-                            <td className="show992">{sale.visited}</td>
-                            <td className="show992">{sale.visited}</td>
-                            <td>{sale.amount.toFixed(2)}</td>
-                            <td>
-                                <div className="dsmeta-red-btn-container">
-                                    < NotificationButton />
-                                </div>
-                            </td>
-                        </tr>
+                            return (
+                                <tr key={sale.id}>
+                                    <td className="show992">{sale.id}</td>
+                                    <td className="show576">{new Date(sale.date).toLocaleDateString()}</td>
+                                    <td>{sale.sellerName}</td>
+                                    <td className="show992">{sale.visited}</td>
+                                    <td className="show992">{sale.visited}</td>
+                                    <td>{sale.amount.toFixed(2)}</td>
+                                    <td>
+                                        <div className="dsmeta-red-btn-container">
+                                            < NotificationButton />
+                                        </div>
+                                    </td>
+                                </tr>
                             )
-                        } 
+                        }
                         )
                         }
 
